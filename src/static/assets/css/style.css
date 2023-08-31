@@ -1,0 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway&family=Roboto&display=swap');
+
+:root {
+    font-size: 12px;
+    --text-primary: #ffffff;
+    --transition-speed: 600ms;
+}
+
+body {
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

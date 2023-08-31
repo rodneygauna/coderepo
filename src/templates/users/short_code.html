@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Authentication</h1>
+<p>
+  An short code has been sent to your HealthTrio email address. Please enter it
+  here to continue the login process.
+</p>
+<form action="" method="post">
+  {{ form.hidden_tag() }} {{ form.short_code.label }} {{ form.short_code }} {{
+  form.submit() }} {% endblock content %}
+</form>
