@@ -161,3 +161,6 @@ cython_debug/
 
 # Visual Studio Code Settings
 .vscode/
+
+# SQLite3 Database
+src/database.db
