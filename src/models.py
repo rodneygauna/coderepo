@@ -54,22 +54,60 @@ class User(db.Model, UserMixin):
 
 
 # Model - ICD-10 Library
-class ICD10CM(db.Model):
-    """ICD-10-CM model"""
+class ICD10(db.Model):
+    """ICD-10 model"""
 
-    __tablename__ = "icd10cm"
+    __tablename__ = "icd10"
 
     # IDs
     id = db.Column(db.Integer, primary_key=True)
-    # ICD-10-CM Library Year
+    # Timestamps
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # ICD-10 Information
     library_year = db.Column(db.DateTime, nullable=False)
-    # ICD-10-CM Code
+    library_type = db.Column(db.String(3), nullable=False)
     diagnosis_code = db.Column(db.String(10), nullable=False)
-    # ICD-10-CM Description
     diagnosis_description = db.Column(db.String(255), nullable=False)
-    # ICD-10-CM Inclusion Terms
-    inclusion_term_1 = db.Column(db.String(255))
-    inclusion_term_2 = db.Column(db.String(255))
-    inclusion_term_3 = db.Column(db.String(255))
-    inclusion_term_4 = db.Column(db.String(255))
-    inclusion_term_5 = db.Column(db.String(255))
+
+
+# Model - SNOMED CT Library
+class SNOMEDCT(db.Model):
+    """SNOMED CT model"""
+
+    __tablename__ = "snomedct"
+
+    # IDs
+    id = db.Column(db.Integer, primary_key=True)
+    # Timestamps
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # SNOMED CT Information
+    library_year = db.Column(db.DateTime, nullable=False)
+    snomed_code = db.Column(db.String(10), nullable=False)
+    snomed_description = db.Column(db.String(255), nullable=False)
+
+
+# Model - ICD-10 to SNOMED CT Mapping
+class ICD10_SNOMEDCT(db.Model):
+    """ICD-10 to SNOMED CT Mapping model"""
+
+    __tablename__ = "icd10_snomedct"
+
+    # IDs
+    id = db.Column(db.Integer, primary_key=True)
+    # Timestamps
+    created_date = db.Column(db.DateTime, nullable=False,
+                             default=datetime.utcnow)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    updated_date = db.Column(db.DateTime)
+    updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # ICD-10 to SNOMED CT Mapping Information
+    icd10_id = db.Column(db.Integer, db.ForeignKey("icd10.id"))
+    snomedct_id = db.Column(db.Integer, db.ForeignKey("snomedct.id"))
