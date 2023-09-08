@@ -3,6 +3,7 @@ icd10 > views.py
 """
 
 # Imports
+from datetime import datetime
 from flask import (
     Blueprint,
     abort,
@@ -52,6 +53,11 @@ def icd10_upload_parse():
 
     form = ICD10UploadForm()
 
+    # Record variables
+    records_updated = 0
+    records_skipped = 0
+    new_records = 0
+
     if form.validate_on_submit():
         # Get the file from the form
         file = request.files["file"]
@@ -71,17 +77,44 @@ def icd10_upload_parse():
             for diag in root.findall(".//diag"):
                 diagnosis_code = diag.find("name").text
                 diagnosis_description = diag.find("desc").text
-                # Create a new ICD-10 record
-                icd10 = ICD10(
+                # Check if the ICD-10 record already exists
+                # (based on the
+                # - library year,
+                # - library type,
+                # - diagnosis code,
+                # - and diagnosis description)
+                icd10_exists = ICD10.query.filter_by(
                     library_year=form.library_year.data,
                     library_type=form.library_type.data,
                     diagnosis_code=diagnosis_code,
-                    diagnosis_description=diagnosis_description,
-                )
-                db.session.add(icd10)
+                ).first()
+                if icd10_exists:
+                    # Check if the ICD-10 record's description has been updated
+                    # if so, update the record
+                    if icd10_exists.diagnosis_description != diagnosis_description:
+                        icd10_exists.diagnosis_description = diagnosis_description
+                        icd10_exists.updated_date = datetime.utcnow()
+                        icd10_exists.updated_by = current_user.id
+                        records_updated += 1
+                    # If the ICD-10 record already exists, skip it
+                    records_skipped += 1
+                    continue
+                else:
+                    # Create a new ICD-10 record
+                    icd10_new = ICD10(
+                        library_year=form.library_year.data,
+                        library_type=form.library_type.data,
+                        diagnosis_code=diagnosis_code,
+                        diagnosis_description=diagnosis_description,
+                        created_date=datetime.utcnow(),
+                        created_by=current_user.id,
+                    )
+                    db.session.add(icd10_new)
+                    new_records += 1
             # Commit the changes to the database
             db.session.commit()
-            flash("ICD-10 upload successful!", "success")
+            flash(f"New: {new_records} | Updated: {records_updated} | Skipped: {records_skipped}",
+                  "success")
             return redirect(url_for("icd10.icd10_landing"))
         else:
             flash("Invalid file type!", "danger")
