@@ -68,7 +68,7 @@ class ICD10(db.Model):
     updated_date = db.Column(db.DateTime)
     updated_by = db.Column(db.Integer, db.ForeignKey("users.id"))
     # ICD-10 Information
-    library_year = db.Column(db.DateTime, nullable=False)
+    library_year = db.Column(db.String(4), nullable=False)
     library_type = db.Column(db.String(3), nullable=False)
     diagnosis_code = db.Column(db.String(10), nullable=False)
     diagnosis_description = db.Column(db.String(255), nullable=False)

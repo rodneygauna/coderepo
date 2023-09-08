@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %}
+<h1>ICD-10 XML Upload</h1>
+<form method="post" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div>{{ form.library_year.label }} {{ form.library_year() }}</div>
+  <div>{{ form.library_type.label }} {{ form.library_type() }}</div>
+  <div>{{ form.file.label }} {{ form.file() }}</div>
+  <div>{{ form.submit() }}</div>
+</form>
+{% endblock content %}
