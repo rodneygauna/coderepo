@@ -59,6 +59,7 @@ from src.cli.cli_commands import commands_bp
 from src.core.views import core_bp
 from src.users.views import users_bp
 from src.icd10.views import icd10_bp
+from src.api.api_icd10 import api_icd10_bp
 
 
 # Flask Blueprints - Register
@@ -66,3 +67,4 @@ app.register_blueprint(commands_bp)
 app.register_blueprint(core_bp)
 app.register_blueprint(users_bp)
 app.register_blueprint(icd10_bp)
+app.register_blueprint(api_icd10_bp)
